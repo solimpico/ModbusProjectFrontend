@@ -1,0 +1,13 @@
+<h3>Home</h3>
+<div>
+  <button type="button" class="btn btn-primary" (click)="updateTelemetry()">Update Temperature and humidity</button>
+</div>
+<div class="row justify-content-start">
+  <div class="col-4">
+    <div class="card" style="width: 18rem;" *ngFor="let telemetry of telemetryList">
+      {{telemetry.type}} : {{telemetry.value}}
+      <h6>{{lastUpdate | date: 'HH:mm:ss'}}</h6>
+    </div>
+  </div>
+</div>
+
