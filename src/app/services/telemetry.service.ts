@@ -17,6 +17,6 @@ export class TelemetryService {
   constructor(private http: HttpClient) { }
 
   getTelemetry(): Observable<Telemetry[]>{
-    return this.http.get<Telemetry[]>('http://localhost:8080/telemetry/temperatureAndHumidity');
+    return this.http.get<Telemetry[]>('http://localhost:8080/getTemperatureAndHumidity');
   }
 }

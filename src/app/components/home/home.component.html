@@ -1,13 +1,23 @@
-<h3>Home</h3>
+<h1>Dashboard</h1>
 <div>
-  <button type="button" class="btn btn-primary" (click)="updateTelemetry()">Update Temperature and humidity</button>
-</div>
-<div class="row justify-content-start">
-  <div class="col-4">
-    <div class="card" style="width: 18rem;" *ngFor="let telemetry of telemetryList">
-      {{telemetry.type}} : {{telemetry.value}}
+  <div class="row">
+    <div class="col">
+      <div [chart]="lineChart"></div>
+    </div>
+  </div>
+  <div class="row">
+    <button type="button" class="btn btn-primary" (click)="updateTelemetry()">Update telemetry</button>
+  </div>
+  <div class="row">
+    <div class="col" *ngFor="let telemetry of telemetryList">
+      <h4>{{telemetry.type}} : {{telemetry.value}}</h4>
       <h6>{{lastUpdate | date: 'HH:mm:ss'}}</h6>
+    </div>
+    <div class="col" *ngIf="motor">
+      <button type="button" class="btn btn-danger" (click)="motorOff()">Turn motor OFF</button>
+    </div>
+    <div class="col" *ngIf="!motor">
+      <button type="button" class="btn btn-success" (click)="motorOn()">Turn motor ON</button>
     </div>
   </div>
 </div>
-
