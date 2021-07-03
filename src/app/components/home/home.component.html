@@ -1,52 +1,73 @@
-<style>
-  table {
-    border-collapse:collapse
-  }
-  td, th {
-    border:1px solid #ddd;
-    padding:8px;
-  }
-</style>
-<h1>Dashboard</h1>
-  <h2>Data history</h2>
-    <div
-      [chart]="lineChart">
-
-    </div>
-<div>
-  <button (click)="updateTelemetry()">Update telemetry</button>
+<body style="background-color: rgba(255,255,255,0.9)">
+<div class="card" style="background-color: #0092ff; color: white">
+  <h1 class="fw-light">Dashboard</h1>
 </div>
-  <table>
-    <tr><td><h2>LAST VALUES</h2></td><td><h2 >AVERAGE</h2></td><td><h2>OCCURENCE</h2></td><td><h2>CONTROLLO MOTORE</h2></td></tr>
-    <tr>
-      <td>
-        <div *ngFor="let telemetry of telemetryList">
-        <h4>{{telemetry.type}} : {{telemetry.value}}</h4>
-        <h6>{{lastUpdate | date: 'HH:mm:ss'}}</h6>
-      </div>
-      </td>
-      <td>
-        <div *ngIf="averageTemp !== 0 || averageHum !== 0" style="margin-top: -40px">
-          <h4>Medium temperature: {{averageTemp}}</h4> <br>
-          <h4>Medium humidity: {{averageHum}}</h4>
+<br>
+<br>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="card" style="width: 18rem;">
+        <div *ngIf="lastTemperature<60" class="card-body" style="background-color: rgb(71,177,28)">
+          <h5 class="card-title" style="color: white">Temperature :)</h5>
+          <h6 class="card-subtitle" style="color: white">{{lastTemperature}} °C</h6>
         </div>
-      </td>
-      <td>
-        <ul *ngFor="let element of temperatureOccurenceValue; let i = index">
-          <li><h4>Temperature value: {{element}} Occurence: {{temperatureOccurence[i]}}</h4></li>
-        </ul>
-        <ul *ngFor="let element of humidityOccurenceValue; let i = index">
-          <li><h4>Humidity value: {{element}} Occurence: {{humidityOccurence[i]}}</h4></li>
-        </ul>
-      </td>
-      <td>
+        <div *ngIf="lastTemperature>=60" class="card-body" style="background-color: red">
+          <h5 class="card-title" style="color: white">Temperature :(</h5>
+          <h6 class="card-subtitle" style="color: white">{{lastTemperature}} °C</h6>
+        </div>
+        <div *ngIf="lastHumidity<100" class="card-body" style="background-color: rgb(71,177,28)">
+          <h5 class="card-title" style="color: white">Humidity :)</h5>
+          <h6 class="card-subtitle" style="color: white">{{lastHumidity}} %</h6>
+        </div>
+        <div *ngIf="lastHumidity>=100" class="card-body" style="background-color: red">
+          <h5 class="card-title" style="color: white">Humidity :(</h5>
+          <h6 class="card-subtitle" style="color: white">{{lastHumidity}} %</h6>
+        </div>
+        <p class="card-text">Last update: {{lastUpdate | date: 'HH:mm:ss'}}</p>
+        <button class="btn btn-outline-info" (click)="showMore()">More details</button>
+      </div>
+      <div *ngIf="more" class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">Average temperature</h5>
+          <h6 class="card-subtitle">{{averageTemp}} °C</h6>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Average humidity</h5>
+          <h6 class="card-subtitle">{{averageHum}} %</h6>
+        </div>
+      </div>
+      <div  *ngIf="more" class="card" style="width: 18rem;" >
+        <div class="card-body">
+          <h5 class="card-title">Temperature Occurences</h5>
+          <ul *ngFor="let element of temperatureOccurenceValue; let i = index">
+            <li><h6 class="card-subtitle">{{element}} °C - Occurences: {{temperatureOccurence[i]}}</h6></li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Humidity Occurences</h5>
+          <ul *ngFor="let element of humidityOccurenceValue; let i = index">
+            <li><h6 class="card-subtitle">{{element}} % - Occurences: {{humidityOccurence[i]}}</h6></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card" style="width: 36rem;"[chart]="lineChart">
+      </div>
+      <br>
+      <div class="btn-group" role="group" aria-label="Basic example">
         <div class="col" *ngIf="motor">
-          <button type="button" class="btn btn-danger" (click)="motorOff()">Turn motor OFF</button>
+          <button type="button" class="btn btn-success" (click)="motorOff()">Turn motor OFF</button>
         </div>
         <div class="col" *ngIf="!motor">
-          <button type="button" class="btn btn-success" (click)="motorOn()">Turn motor ON</button>
+          <button type="button" class="btn btn-danger" (click)="motorOn()">Turn motor ON</button>
         </div>
-      </td>
-    </tr>
-  </table>
-
+        <div>
+          <button type="button" class="btn btn-primary" (click)="updateTelemetry()">Update telemetry</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>

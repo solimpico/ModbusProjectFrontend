@@ -23,6 +23,9 @@ export class HomeComponent implements OnInit {
   humidityOccurenceValue: number[];
   temperatureOccurence: number[];
   humidityOccurence: number[];
+  lastTemperature: number;
+  lastHumidity: number;
+  more = false;
 
 
   constructor(private telemetryService: TelemetryService,
@@ -32,15 +35,18 @@ export class HomeComponent implements OnInit {
     this.temperatureValues = [];
     this.humidityValues = [];
     this.telemetryList = [];
+    this.more = false;
     this.telemetryService.getTelemetry().subscribe(list => {
         this.lastUpdate = new Date().getTime().toString();
         list.forEach(data => {
           if (data.type === 'Temperature'){
             this.temperatureValues.push(data.value);
+            this.lastTemperature = data.value;
             this.telemetryList.unshift(data);
           }
           else {
             this.telemetryList.unshift(data);
+            this.lastHumidity = data.value;
             this.humidityValues.push(data.value);
           }
         });
@@ -50,7 +56,7 @@ export class HomeComponent implements OnInit {
         type: 'line'
       },
       title: {
-        text: 'Telemetry'
+        text: 'Data history'
       },
       credits: {
         enabled: false
@@ -69,6 +75,7 @@ export class HomeComponent implements OnInit {
     this.calculateAvg();
     this.calculate(this.temperatureValues, 'temp');
     this.calculate(this.humidityValues, 'hum');
+    this.updateTelemetry();
     setInterval(() => {
       this.updateTelemetry();
     }, 60000);
@@ -90,10 +97,12 @@ export class HomeComponent implements OnInit {
         if (data.type === 'Temperature'){
           this.temperatureValues.push(data.value);
           this.telemetryList[0] = data;
+          this.lastTemperature = data.value;
         }
         else {
           this.humidityValues.push(data.value);
           this.telemetryList[1] = data;
+          this.lastHumidity = data.value;
         }
       });
       this.checkLenght();
@@ -105,7 +114,7 @@ export class HomeComponent implements OnInit {
           type: 'line'
         },
         title: {
-          text: 'Telemetry'
+          text: 'Data history'
         },
         credits: {
           enabled: false
@@ -152,48 +161,7 @@ export class HomeComponent implements OnInit {
       this.averageHum = parseFloat((this.averageHum / this.humidityValues.length).toFixed(2));
     }
   }
-/*
-  calculateOccurence(): void{
-    if (this.temperatureValues.length !== 0){
-      let control = false;
-      this.temperatureOccurence[0][0] = (this.temperatureValues[0]);
-      this.temperatureOccurence[0][1] = 1;
-      this.temperatureValues.forEach(value => {
-        if (this.findValue(value, this.temperatureOccurence)){
-          this.temperatureOccurence.forEach(el => {
-            if (el[0] === value){
-              el[1] = el[1] + 1;
-              control = true;
-            }
-          });
-        }
-        if (!control){
-          this.temperatureOccurence[this.temperatureOccurence.length - 1][0] = value;
-          this.temperatureOccurence[this.temperatureOccurence.length - 1][1] = 1;
-        }
-      });
-    }
-    if (this.humidityValues.length !== 0){
-      let control = false;
-      this.humidityOccurence[0][0] = this.humidityValues[0];
-      this.humidityOccurence[0][1] = 1;
-      this.humidityValues.forEach(value => {
-        if (this.findValue(value, this.humidityOccurence)){
-          this.humidityOccurence.forEach(el => {
-            if (el[0] === value){
-              el[1] = el[1] + 1;
-              control = true;
-            }
-          });
-        }
-        if (!control){
-          this.humidityOccurence[this.humidityOccurence.length - 1][0] = value;
-          this.humidityOccurence[this.humidityOccurence.length - 1][1] = 1;
-        }
-      });
-    }
-  }
-*/
+
   calculate(arr: number[], type: string): void {
     if (type === 'temp') {
       const a = [];
@@ -233,14 +201,11 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  findValue(value: number, matrix: number[][]): boolean{
-    let result = false;
-    matrix.forEach(val => {
-      if (val[0] === value){
-        result = true;
-      }
-    });
-    return result;
+  showMore(): void{
+    if (!this.more){
+      this.updateTelemetry();
+    }
+    this.more = !this.more;
   }
 
 }
