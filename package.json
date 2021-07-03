@@ -20,6 +20,7 @@
     "@angular/platform-browser-dynamic": "~11.2.14",
     "@angular/router": "~11.2.14",
     "angular-highcharts": "^12.0.0",
+    "bootstrap": "^5.0.2",
     "chart.js": "^3.3.2",
     "d3": "^7.0.0",
     "highcharts": "^9.1.2",
