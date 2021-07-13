@@ -42,10 +42,10 @@ export class HomeComponent implements OnInit {
           if (data.type === 'Temperature'){
             this.temperatureValues.push(data.value);
             this.lastTemperature = data.value;
-            this.telemetryList.unshift(data);
+            this.telemetryList.push(data);
           }
           else {
-            this.telemetryList.unshift(data);
+            this.telemetryList.push(data);
             this.lastHumidity = data.value;
             this.humidityValues.push(data.value);
           }
@@ -98,37 +98,21 @@ export class HomeComponent implements OnInit {
           this.temperatureValues.push(data.value);
           this.telemetryList[0] = data;
           this.lastTemperature = data.value;
+          // 0 = temperature
+          this.lineChart.addPoint(data.value, 0, true, false);
         }
         else {
           this.humidityValues.push(data.value);
           this.telemetryList[1] = data;
           this.lastHumidity = data.value;
+          // 1 = humidity
+          this.lineChart.addPoint(data.value, 1, true, false);
         }
       });
       this.checkLenght();
       this.calculateAvg();
       this.calculate(this.temperatureValues, 'temp');
       this.calculate(this.humidityValues, 'hum');
-      this.lineChart = new Chart({
-        chart: {
-          type: 'line'
-        },
-        title: {
-          text: 'Data history'
-        },
-        credits: {
-          enabled: false
-        },
-        series: [{
-          type: 'line',
-          name: 'Temperature',
-          data: this.temperatureValues
-        }, {
-          type: 'line',
-          name: 'Humidity',
-          data: this.humidityValues
-        }]
-      });
       this.lastUpdate = new Date().getTime().toString();
     });
   }
